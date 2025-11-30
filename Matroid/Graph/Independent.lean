@@ -102,13 +102,16 @@ lemma isIndependent_insert_iff [G.Loopless] (hx : x ∈ V(G)) :
     --the next line divides your goal into into by spliting ∧
     refine ⟨?_, ?_⟩
     · --For this use hS'.mono and subset_insert
-      sorry
+      have hxS: S ⊆ (insert x S) := by exact subset_insert x S
+      exact hS'.mono  hxS
     intro y hyS hadj
     --Now use pairwise_nonadj, you may also need the following haves:
-    have hxi : x ∈ insert x S := by sorry
-    have hyi : y ∈ insert y S := by sorry
-    have : x ≠ y := by sorry
-    sorry
+    have hxi : x ∈ insert x S := by exact mem_insert x S
+    --have hyi : y ∈ insert y S := by exact mem_insert y S
+    have hyi: y ∈ insert x S:= by exact mem_insert_of_mem x hyS
+    have hxy: x ≠ y := by exact Adj.ne hadj
+    apply hS'.pairwise_nonadj hxi hyi hxy
+    exact hadj
   intro ⟨hS, h⟩
   rw [isIndependent_iff']
   refine ⟨?_, ?_⟩
