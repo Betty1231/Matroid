@@ -116,7 +116,7 @@ lemma isIndependent_insert_iff [G.Loopless] (hx : x ∈ V(G)) :
   rw [isIndependent_iff']
   refine ⟨?_, ?_⟩
   · -- use insert_subset
-    sorry
+    exact insert_subset hx hS.subset
   intro y hy z hz hne
   --The following part is to prove a wlog y ∈ S.
   -- This is because if hy and hz both say that either y (z) is in S or is equal to x
@@ -127,15 +127,15 @@ lemma isIndependent_insert_iff [G.Loopless] (hx : x ∈ V(G)) :
     have hzS : z ∈ S := by simp at hz; tauto
     intro hadj
     -- aux is used to say that
-    sorry
+    exact aux hz hy hne.symm hzS hadj.symm
   --Now that the wlog has been solved, you need cases on z = x or z ∈ S
   obtain (rfl | hzS) := hz
   · --by contradiction
     intro hadj
     --look at the statement in h
-    sorry
+    exact h y hyS (id (Adj.symm hadj))
   --finish with pairwise_nonadj applied to set S
-  sorry
+  exact hS.pairwise_nonadj hyS hzS hne
 
   --hS'.mono (subset_insert _ _)
   --exact (hS'.pairwise_nonadj (mem_insert x _) (mem_insert_of_mem _ hyS) hadj.ne) hadj
