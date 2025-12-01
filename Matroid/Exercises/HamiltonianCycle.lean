@@ -1036,20 +1036,35 @@ lemma Hamiltonian_alpha_kappa [G.Simple] [G.Finite] (h3 : 3 ≤ V(G).encard)
   have ⟨d, hdD ⟩ : ∃ d, d ∈ V(D) := by
     have := hD.nonempty
     exact this
-  have hI : G.IsIndependent (insert d nbrIndepSet) := by sorry
+  have hI : G.IsIndependent (insert d nbrIndepSet) := by
+     have hnad: ∀ y, y ∈ nbrIndepSet → ¬ G.Adj d y := by
+        intro y
+        -- the index of y is i+1
+        -- the vertex of index i on C is in the neighbourhood of V(D)
+        -- use the lemma of neighbour of such vertex is not in the neighbourhood of V(D)
+        -- y and d are not adjacent
+        sorry
+     have hdG: d ∈ V(G) := by sorry
+       -- V(D) ⊆ V(G-V(C))
+       -- V(D) ⊆ V(G) \ V(C)
+       -- d ∈ V(G) \ V(C)
+       -- d ∈ V(G)
+     -- Use backward direction of isIndependent_insert_iff
+     sorry
   -- Use isIndependent_insert_iff (It's in Matroid/Graph/Independent.lean)
   have hS : G.IsSepSet nbrIndepSet := by
     have hVn : nbrIndepSet ⊆ V(G) := by exact hindep.subset
     have hnconn : ¬ (G - nbrIndepSet).Connected := by
       by_contra hcon
       --You want to use connected_iff_forall_closed
-      have hne: V(G - nbrIndepSet).Nonempty := by sorry
+      have hne: V(G - nbrIndepSet).Nonempty := by exact IsCompOf.nonempty hcon
       have hDcG : D ≤c G - nbrIndepSet := by sorry
       have := ((connected_iff_forall_closed hne).1 hcon) hDcG (hD.nonempty )
       have ⟨x, hx ⟩ : ∃ x, x ∈ V(G - nbrIndepSet) \ V(D) := by sorry
       have : G - nbrIndepSet ≠ D := by
         sorry
       sorry
+
     exact { subset_vx := hVn, not_connected := hnconn }
 
   have hsize : nbrIndepSet.encard < (insert d nbrIndepSet).encard := by sorry
