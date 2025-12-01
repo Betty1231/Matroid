@@ -1062,10 +1062,14 @@ lemma Hamiltonian_alpha_kappa [G.Simple] [G.Finite] (h3 : 3 ≤ V(G).encard)
       have := ((connected_iff_forall_closed hne).1 hcon) hDcG (hD.nonempty )
       have ⟨x, hx ⟩ : ∃ x, x ∈ V(G - nbrIndepSet) \ V(D) := by sorry
       have : G - nbrIndepSet ≠ D := by
-        sorry
-      sorry
+        by_contra hGnD
+        have hxnDn: x ∉ V(D) := by exact not_mem_of_mem_diff hx
+        have hxGn: x ∈ V(G-nbrIndepSet) := by exact mem_of_mem_inter_left hx
+        have hxnD: x ∈ V(D) := by simpa [hGnD] using hxGn
+        exact hxnDn hxnD
 
     exact { subset_vx := hVn, not_connected := hnconn }
+
 
   have hsize : nbrIndepSet.encard < (insert d nbrIndepSet).encard := by sorry
   have hcontra : S.encard < A.encard := by sorry
