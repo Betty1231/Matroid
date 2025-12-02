@@ -1032,25 +1032,58 @@ lemma Hamiltonian_alpha_kappa [G.Simple] [G.Finite] (h3 : 3 ≤ V(G).encard)
   have hDC : D ≤ G - V(C) := by exact IsCompOf.le hD
   have hDconn : D.Connected := by exact IsCompOf.connected hD
   have hindep := indep_nbrsnext hCs hDC hDconn
-  set nbrIndepSet :=  (C.get '' {i | i < C.length ∧ G.SetVxAdj V(D) (C.get (i + 1))})
+  set nbrIndepSet :=  (C.get '' {i | i < C.length ∧ G.SetVxAdj V(D) (C.get (i + 1))}) with h_set
   have ⟨d, hdD ⟩ : ∃ d, d ∈ V(D) := by
     have := hD.nonempty
     exact this
   have hI : G.IsIndependent (insert d nbrIndepSet) := by
-     have hnad: ∀ y, y ∈ nbrIndepSet → ¬ G.Adj d y := by
-        intro y
+    have hdV: d ∈ V(G) := by
+      have: V(D) ⊆ V(G-V(C)) := hD.subset
+      have: V(D) ⊆ V(G)\ V(C) := by exact this
+      rw [subset_diff] at this
+      exact this.1 hdD
+      -- exact this.1 hdD
+      -- have: = (hD.vertex_subset)
+      -- sorry
+    apply (isIndependent_insert_iff hdV).2
+    refine ⟨?_, ?_⟩
+    rw[h_set]
+    exact hindep
+    intro y hy
+    rw[h_set] at hy
+    simp only [mem_image, mem_setOf_eq] at hy
+    obtain ⟨ i, ⟨ ⟨ hi1, hi2⟩, hi3⟩   ⟩ := hy
+    by_contra hc
+    have hnt: C.Nonempty:=by exact hC.nonempty
+    have h1: i ∈ {i≤C.length| G.SetVxAdj V(D) (C.get i)}:= by
+      refine⟨Nat.le_of_succ_le hi1, ?_⟩
+      use d
+      rw[← hi3] at hc
+      refine⟨hdD, hc.symm⟩
+    have h2: (i+1) ∈ {i≤C.length| G.SetVxAdj V(D) (C.get i)} := by
+      have: i+1 ≤ C.length := by omega
+      refine⟨ this, hi2⟩
+    have h3: i≤ i+1:= by omega
+    have := indep_nbrs (G:=G) hCs hDC hDconn hnt h1 h2 h3
+    omega
+
+
+
+
+     -- have hnad: ∀ y, y ∈ nbrIndepSet → ¬ G.Adj d y := by
+        --intro y
         -- the index of y is i+1
         -- the vertex of index i on C is in the neighbourhood of V(D)
         -- use the lemma of neighbour of such vertex is not in the neighbourhood of V(D)
         -- y and d are not adjacent
-        sorry
-     have hdG: d ∈ V(G) := by sorry
+
+     --have hdG: d ∈ V(G) := by sorry
        -- V(D) ⊆ V(G-V(C))
        -- V(D) ⊆ V(G) \ V(C)
        -- d ∈ V(G) \ V(C)
        -- d ∈ V(G)
      -- Use backward direction of isIndependent_insert_iff
-     sorry
+    -- sorry
   -- Use isIndependent_insert_iff (It's in Matroid/Graph/Independent.lean)
   have hS : G.IsSepSet nbrIndepSet := by
     have hVn : nbrIndepSet ⊆ V(G) := by exact hindep.subset
@@ -1063,11 +1096,11 @@ lemma Hamiltonian_alpha_kappa [G.Simple] [G.Finite] (h3 : 3 ≤ V(G).encard)
       have ⟨x, hx ⟩ : ∃ x, x ∈ V(G - nbrIndepSet) \ V(D) := by sorry
       have : G - nbrIndepSet ≠ D := by
         by_contra hGnD
-        have hxnDn: x ∉ V(D) := by exact not_mem_of_mem_diff hx
+        have hxnDn: x ∉ V(D) := by exact Set.notMem_of_mem_diff hx
         have hxGn: x ∈ V(G-nbrIndepSet) := by exact mem_of_mem_inter_left hx
         have hxnD: x ∈ V(D) := by simpa [hGnD] using hxGn
         exact hxnDn hxnD
-
+      (expose_names; exact this (id (Eq.symm this_1)))
     exact { subset_vx := hVn, not_connected := hnconn }
 
 
